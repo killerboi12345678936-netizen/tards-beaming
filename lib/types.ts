@@ -30,3 +30,7 @@ export interface AccessRecord {
   id: string
   at: number
 }
+
+/** Aliases used across UI components. */
+export type ResourceNode = TardsNode
+export type Category = TardsCategory

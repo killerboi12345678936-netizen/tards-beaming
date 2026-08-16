@@ -61,3 +61,13 @@ export const sfx = {
 }
 
 export type SfxName = keyof typeof sfx
+
+/**
+ * Convenience wrapper used across components. Respects the caller's
+ * responsibility to gate on the SOUND setting; components pass only when enabled,
+ * but we also no-op unknown names safely.
+ */
+export function playSound(name: SfxName) {
+  const fn = sfx[name]
+  if (fn) fn()
+}

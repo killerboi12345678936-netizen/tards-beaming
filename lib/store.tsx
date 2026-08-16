@@ -17,11 +17,25 @@ const KEYS = {
   categories: 'tards.categories.v1',
   favorites: 'tards.favorites.v1',
   recent: 'tards.recent.v1',
-  sound: 'tards.sound.v1',
+  settings: 'tards.settings.v1',
   booted: 'tards.booted.v1',
 }
 
 type NewNode = Omit<TardsNode, 'id' | 'createdAt' | 'order'>
+
+export interface TardsSettings {
+  sound: boolean
+  cursor: boolean
+  effects: boolean
+  adminMode: boolean
+}
+
+const DEFAULT_SETTINGS: TardsSettings = {
+  sound: false,
+  cursor: true,
+  effects: true,
+  adminMode: false,
+}
 
 interface StoreValue {
   ready: boolean
@@ -29,7 +43,7 @@ interface StoreValue {
   categories: TardsCategory[]
   favorites: string[]
   recent: AccessRecord[]
-  soundOn: boolean
+  settings: TardsSettings
   addNode: (data: NewNode) => TardsNode
   updateNode: (id: string, data: Partial<TardsNode>) => void
   deleteNode: (id: string) => void
@@ -39,7 +53,7 @@ interface StoreValue {
   toggleFavorite: (id: string) => void
   recordAccess: (id: string) => void
   addCategory: (label: string, icon?: string) => TardsCategory
-  setSoundOn: (on: boolean) => void
+  setSetting: <K extends keyof TardsSettings>(key: K, value: TardsSettings[K]) => void
   resetNetwork: () => void
 }
 
@@ -69,7 +83,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
   const [categories, setCategories] = useState<TardsCategory[]>(DEFAULT_CATEGORIES)
   const [favorites, setFavorites] = useState<string[]>([])
   const [recent, setRecent] = useState<AccessRecord[]>([])
-  const [soundOn, setSoundOnState] = useState(false)
+  const [settings, setSettings] = useState<TardsSettings>(DEFAULT_SETTINGS)
 
   // hydrate from localStorage after mount
   useEffect(() => {
@@ -77,7 +91,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
     setCategories(read(KEYS.categories, DEFAULT_CATEGORIES))
     setFavorites(read(KEYS.favorites, []))
     setRecent(read(KEYS.recent, []))
-    setSoundOnState(read(KEYS.sound, false))
+    setSettings({ ...DEFAULT_SETTINGS, ...read(KEYS.settings, {}) })
     setReady(true)
   }, [])
 
@@ -176,10 +190,13 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
     return cat
   }, [])
 
-  const setSoundOn = useCallback(
-    (on: boolean) => {
-      setSoundOnState(on)
-      persist(KEYS.sound, on)
+  const setSetting = useCallback(
+    <K extends keyof TardsSettings>(key: K, value: TardsSettings[K]) => {
+      setSettings((prev) => {
+        const next = { ...prev, [key]: value }
+        persist(KEYS.settings, next)
+        return next
+      })
     },
     [persist],
   )
@@ -198,7 +215,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
       categories,
       favorites,
       recent,
-      soundOn,
+      settings,
       addNode,
       updateNode,
       deleteNode,
@@ -208,7 +225,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
       toggleFavorite,
       recordAccess,
       addCategory,
-      setSoundOn,
+      setSetting,
       resetNetwork,
     }),
     [
@@ -217,7 +234,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
       categories,
       favorites,
       recent,
-      soundOn,
+      settings,
       addNode,
       updateNode,
       deleteNode,
@@ -227,7 +244,7 @@ export function TardsStoreProvider({ children }: { children: React.ReactNode }) 
       toggleFavorite,
       recordAccess,
       addCategory,
-      setSoundOn,
+      setSetting,
       resetNetwork,
     ],
   )
@@ -240,3 +257,6 @@ export function useTards() {
   if (!ctx) throw new Error('useTards must be used within TardsStoreProvider')
   return ctx
 }
+
+/** Alias used across UI components. */
+export const useStore = useTards

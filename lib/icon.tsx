@@ -14,6 +14,9 @@ export function Icon({ name, ...props }: { name: string } & LucideProps) {
   return <Cmp {...props} />
 }
 
+/** Alias used by some components. */
+export const NodeIcon = Icon
+
 /** Curated list of icon names offered in the DEPLOY NODE picker. */
 export const ICON_CHOICES = [
   'Sparkles',
@@ -54,3 +57,6 @@ export const ICON_CHOICES = [
   'Music',
   'Palette',
 ]
+
+/** Alias used by some components. */
+export const ICON_NAMES = ICON_CHOICES

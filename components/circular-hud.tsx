@@ -8,6 +8,10 @@ interface CircularHudProps {
   ticks?: number
   /** show the crosshair reticle in the middle */
   reticle?: boolean
+  /** fixed pixel size; when omitted the element fills its container */
+  size?: number
+  /** stronger glow variant */
+  intense?: boolean
   children?: React.ReactNode
 }
 
@@ -19,11 +23,16 @@ export function CircularHud({
   className,
   ticks = 60,
   reticle = true,
+  size,
+  intense = false,
   children,
 }: CircularHudProps) {
   const tickArray = Array.from({ length: ticks })
   return (
-    <div className={cn('relative aspect-square', className)}>
+    <div
+      className={cn('relative aspect-square', intense && 'animate-glow-breathe', className)}
+      style={size ? { width: size, height: size } : undefined}
+    >
       {/* outer ticked ring — slow clockwise */}
       <svg
         viewBox="0 0 200 200"
