@@ -1,0 +1,394 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  TARDS // BEAMING — classified HUD identity
+  Palette: black / near-black / deep crimson / blood red / bright red / white / subtle gray
+*/
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* extended TARDS tokens */
+  --color-blood: var(--blood);
+  --color-crimson: var(--crimson);
+  --color-red-bright: var(--red-bright);
+  --color-panel: var(--panel);
+  --color-grid-line: var(--grid-line);
+  --color-hud: var(--hud);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+}
+
+:root {
+  color-scheme: dark;
+
+  --background: oklch(0.09 0.008 25);
+  --foreground: oklch(0.97 0.005 20);
+
+  --card: oklch(0.13 0.012 25);
+  --card-foreground: oklch(0.97 0.005 20);
+
+  --popover: oklch(0.11 0.01 25);
+  --popover-foreground: oklch(0.97 0.005 20);
+
+  --primary: oklch(0.58 0.245 27);
+  --primary-foreground: oklch(0.98 0.01 20);
+
+  --secondary: oklch(0.18 0.02 25);
+  --secondary-foreground: oklch(0.97 0.005 20);
+
+  --muted: oklch(0.16 0.014 25);
+  --muted-foreground: oklch(0.62 0.03 25);
+
+  --accent: oklch(0.5 0.22 25);
+  --accent-foreground: oklch(0.98 0.01 20);
+
+  --destructive: oklch(0.62 0.25 25);
+
+  --border: oklch(0.3 0.06 25 / 45%);
+  --input: oklch(0.24 0.04 25);
+  --ring: oklch(0.58 0.245 27);
+
+  /* extended */
+  --blood: oklch(0.42 0.18 25);
+  --crimson: oklch(0.5 0.22 25);
+  --red-bright: oklch(0.64 0.26 27);
+  --panel: oklch(0.12 0.012 25);
+  --grid-line: oklch(0.55 0.2 25 / 8%);
+  --hud: oklch(0.6 0.24 27 / 70%);
+
+  --radius: 4px;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    background-color: var(--background);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: 'ss01', 'cv01';
+  }
+  ::selection {
+    background: oklch(0.58 0.245 27 / 45%);
+    color: var(--foreground);
+  }
+  /* thin crimson scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.11 0.01 25);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.35 0.14 25 / 60%);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.5 0.22 25 / 80%);
+  }
+}
+
+/* ============================ ANIMATIONS ============================ */
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes hud-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes scanline-move {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+@keyframes card-scan {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+}
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.35;
+  }
+  96% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 0.6;
+  }
+}
+@keyframes status-blink {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 8px 1px var(--red-bright);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 2px 0 var(--red-bright);
+  }
+}
+@keyframes reticle-expand {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes beam-sweep {
+  0% {
+    left: -20%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes node-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+    filter: brightness(2);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+@keyframes glow-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 12px oklch(0.58 0.245 27 / 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 28px oklch(0.6 0.26 27 / 0.85));
+  }
+}
+@keyframes cursor-ping {
+  from {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0.9;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(2.4);
+    opacity: 0;
+  }
+}
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 60px;
+  }
+}
+
+/* ============================ UTILITIES ============================ */
+
+.animate-spin-slow {
+  animation: spin-slow 22s linear infinite;
+}
+.animate-spin-slower {
+  animation: spin-slow 40s linear infinite;
+}
+.animate-spin-reverse {
+  animation: spin-reverse 30s linear infinite;
+}
+.animate-hud-pulse {
+  animation: hud-pulse 3s ease-in-out infinite;
+}
+.animate-flicker {
+  animation: flicker 6s linear infinite;
+}
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-node-enter {
+  animation: node-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-glow-breathe {
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+.status-dot {
+  animation: status-blink 2.4s ease-in-out infinite;
+}
+
+.text-glow {
+  text-shadow: 0 0 14px oklch(0.6 0.26 27 / 0.6), 0 0 40px oklch(0.55 0.22 25 / 0.35);
+}
+.text-glow-strong {
+  text-shadow: 0 0 6px oklch(0.98 0.02 20 / 0.6), 0 0 22px oklch(0.62 0.26 27 / 0.8),
+    0 0 60px oklch(0.55 0.24 25 / 0.6);
+}
+.box-glow {
+  box-shadow: 0 0 0 1px oklch(0.5 0.22 25 / 0.4), 0 0 24px oklch(0.5 0.22 25 / 0.25);
+}
+
+/* corner brackets */
+.brackets {
+  position: relative;
+}
+.brackets::before,
+.brackets::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--red-bright);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+.brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* scanline overlay for cards */
+.card-scanline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.card-scanline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    oklch(0.6 0.26 27 / 0.12),
+    transparent
+  );
+  animation: card-scan 1.1s ease-in-out;
+}
+
+.reduce-motion-safe *,
+.reduce-motion-safe *::before,
+.reduce-motion-safe *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (pointer: fine) {
+  .cursor-none-desktop {
+    cursor: none;
+  }
+}
