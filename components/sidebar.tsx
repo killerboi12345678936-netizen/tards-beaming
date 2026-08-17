@@ -2,15 +2,10 @@
 
 import {
   LayoutDashboard,
-  Boxes,
-  Star,
-  History,
   TerminalSquare,
-  Plus,
   Settings,
   Volume2,
   VolumeX,
-  PenSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/lib/icon'
@@ -22,33 +17,20 @@ interface SidebarProps {
   active: string
   onSelect: (view: string) => void
   categories: TardsCategory[]
-  counts: Record<string, number>
-  totalCount: number
-  favCount: number
-  recentCount: number
-  editMode: boolean
-  onToggleEdit: () => void
   soundOn: boolean
   onToggleSound: () => void
   onOpenTerminal: () => void
-  onAddNode: () => void
   onOpenSettings: () => void
-}
-
-function pad(n: number) {
-  return n.toString().padStart(2, '0')
 }
 
 function NavItem({
   label,
   active,
-  count,
   onClick,
   icon,
 }: {
   label: string
   active: boolean
-  count?: number
   onClick: () => void
   icon: React.ReactNode
 }) {
@@ -56,7 +38,7 @@ function NavItem({
     <button
       onClick={onClick}
       className={cn(
-        'group relative flex w-full items-center gap-3 px-3 py-2 font-mono text-[13px] transition-all',
+        'group relative flex w-full items-center gap-3 px-3 py-2.5 font-mono text-[13px] transition-all',
         active
           ? 'bg-primary/10 text-foreground'
           : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
@@ -73,11 +55,6 @@ function NavItem({
         {icon}
       </span>
       <span className="flex-1 truncate text-left tracking-wide">{label}</span>
-      {count !== undefined && (
-        <span className={cn('font-mono text-[11px]', active ? 'text-primary' : 'text-muted-foreground/70')}>
-          {pad(count)}
-        </span>
-      )}
     </button>
   )
 }
@@ -92,22 +69,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function Sidebar(props: SidebarProps) {
-  const {
-    active,
-    onSelect,
-    categories,
-    counts,
-    totalCount,
-    favCount,
-    recentCount,
-    editMode,
-    onToggleEdit,
-    soundOn,
-    onToggleSound,
-    onOpenTerminal,
-    onAddNode,
-    onOpenSettings,
-  } = props
+  const { active, onSelect, categories, soundOn, onToggleSound, onOpenTerminal, onOpenSettings } = props
 
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-panel/60 backdrop-blur-sm">
@@ -133,27 +95,6 @@ export function Sidebar(props: SidebarProps) {
           active={active === 'dashboard'}
           onClick={() => onSelect('dashboard')}
         />
-        <NavItem
-          label="All Nodes"
-          icon={<Boxes size={16} />}
-          count={totalCount}
-          active={active === 'all'}
-          onClick={() => onSelect('all')}
-        />
-        <NavItem
-          label="Favorites"
-          icon={<Star size={16} />}
-          count={favCount}
-          active={active === 'favorites'}
-          onClick={() => onSelect('favorites')}
-        />
-        <NavItem
-          label="Recent"
-          icon={<History size={16} />}
-          count={recentCount}
-          active={active === 'recent'}
-          onClick={() => onSelect('recent')}
-        />
 
         <SectionLabel>NETWORK</SectionLabel>
         {categories.map((c) => (
@@ -161,7 +102,6 @@ export function Sidebar(props: SidebarProps) {
             key={c.id}
             label={c.label}
             icon={<Icon name={c.icon} size={16} />}
-            count={counts[c.id] ?? 0}
             active={active === c.id}
             onClick={() => onSelect(c.id)}
           />
@@ -174,7 +114,6 @@ export function Sidebar(props: SidebarProps) {
           active={false}
           onClick={onOpenTerminal}
         />
-        <NavItem label="Deploy Node" icon={<Plus size={16} />} active={false} onClick={onAddNode} />
         <NavItem
           label="Settings"
           icon={<Settings size={16} />}
@@ -187,25 +126,13 @@ export function Sidebar(props: SidebarProps) {
       <div className="border-t border-border p-3">
         <div className="mb-3 flex items-center gap-2">
           <button
-            onClick={onToggleEdit}
-            className={cn(
-              'flex flex-1 items-center justify-center gap-2 border px-2 py-1.5 font-mono text-[11px] tracking-widest transition-colors',
-              editMode
-                ? 'border-primary bg-primary/15 text-primary'
-                : 'border-border text-muted-foreground hover:border-primary/60 hover:text-primary',
-            )}
-            aria-pressed={editMode}
-          >
-            <PenSquare size={13} />
-            {editMode ? 'EDIT: ON' : 'EDIT: OFF'}
-          </button>
-          <button
             onClick={onToggleSound}
-            className="flex items-center justify-center border border-border px-2 py-1.5 text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
+            className="flex flex-1 items-center justify-center gap-2 border border-border px-2 py-1.5 font-mono text-[11px] tracking-widest text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
             aria-label={soundOn ? 'Sound on' : 'Sound off'}
             aria-pressed={soundOn}
           >
             {soundOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
+            {soundOn ? 'SOUND: ON' : 'SOUND: OFF'}
           </button>
         </div>
         <AvatarHud label="OPERATOR" sub="ROOT // TARDS" initials="TX" />

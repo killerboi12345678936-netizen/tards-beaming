@@ -484,3 +484,45 @@ select.tards-input {
   appearance: none;
   cursor: pointer;
 }
+
+/* indeterminate progress fill (coming soon / redirect) */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+.anim-progress-indeterminate {
+  animation: progress-indeterminate 1.6s ease-in-out infinite;
+}
+
+/* horizontal scan beam sweeping across a card on hover */
+@keyframes scan-beam-sweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+.scan-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.6 0.24 25 / 0.18),
+    transparent
+  );
+  animation: scan-beam-sweep 1.4s ease-in-out infinite;
+}
