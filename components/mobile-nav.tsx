@@ -1,32 +1,26 @@
 'use client'
 
-import { LayoutDashboard, Boxes, Star, Search, Plus, X } from 'lucide-react'
+import { LayoutDashboard, Wrench, BookOpen, FlaskConical, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/lib/icon'
 import { TardsMark } from './tards-mark'
 import type { TardsCategory } from '@/lib/types'
 
-function pad(n: number) {
-  return n.toString().padStart(2, '0')
-}
-
 export function MobileBottomBar({
   active,
   onSelect,
   onOpenSearch,
-  onAddNode,
 }: {
   active: string
   onSelect: (v: string) => void
   onOpenSearch: () => void
-  onAddNode: () => void
 }) {
   const items = [
     { id: 'dashboard', label: 'HOME', icon: <LayoutDashboard size={18} /> },
-    { id: 'all', label: 'NODES', icon: <Boxes size={18} /> },
+    { id: 'tools', label: 'TOOLS', icon: <Wrench size={18} /> },
     { id: '__search', label: 'SEARCH', icon: <Search size={18} /> },
-    { id: 'favorites', label: 'FAVS', icon: <Star size={18} /> },
-    { id: '__add', label: 'DEPLOY', icon: <Plus size={18} /> },
+    { id: 'tutorials', label: 'GUIDES', icon: <BookOpen size={18} /> },
+    { id: 'methods', label: 'METHODS', icon: <FlaskConical size={18} /> },
   ]
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex items-stretch border-t border-border bg-background/95 backdrop-blur-md lg:hidden">
@@ -37,7 +31,6 @@ export function MobileBottomBar({
             key={it.id}
             onClick={() => {
               if (it.id === '__search') return onOpenSearch()
-              if (it.id === '__add') return onAddNode()
               onSelect(it.id)
             }}
             className={cn(
@@ -66,7 +59,6 @@ export function MobileDrawer({
   active,
   onSelect,
   categories,
-  counts,
   onOpenTerminal,
   onOpenSettings,
 }: {
@@ -75,7 +67,6 @@ export function MobileDrawer({
   active: string
   onSelect: (v: string) => void
   categories: TardsCategory[]
-  counts: Record<string, number>
   onOpenTerminal: () => void
   onOpenSettings: () => void
 }) {
@@ -121,6 +112,23 @@ export function MobileDrawer({
 
         <div className="flex-1 overflow-y-auto py-3">
           <div className="px-4 pb-1 pt-2 font-mono text-[10px] tracking-[0.3em] text-primary/70">
+            COMMAND
+          </div>
+          <button
+            onClick={() => {
+              onSelect('dashboard')
+              onClose()
+            }}
+            className={cn(
+              'flex w-full items-center gap-3 px-4 py-2.5 font-mono text-[13px]',
+              active === 'dashboard' ? 'bg-primary/10 text-primary' : 'text-muted-foreground',
+            )}
+          >
+            <LayoutDashboard size={16} />
+            <span className="flex-1 text-left">Dashboard</span>
+          </button>
+
+          <div className="px-4 pb-1 pt-4 font-mono text-[10px] tracking-[0.3em] text-primary/70">
             NETWORK
           </div>
           {categories.map((c) => (
@@ -137,7 +145,6 @@ export function MobileDrawer({
             >
               <Icon name={c.icon} size={16} />
               <span className="flex-1 text-left">{c.label}</span>
-              <span className="text-[11px]">{pad(counts[c.id] ?? 0)}</span>
             </button>
           ))}
 
@@ -151,7 +158,7 @@ export function MobileDrawer({
             }}
             className="flex w-full items-center gap-3 px-4 py-2.5 font-mono text-[13px] text-muted-foreground"
           >
-            Terminal
+            <span className="flex-1 text-left">Terminal</span>
           </button>
           <button
             onClick={() => {
@@ -160,7 +167,7 @@ export function MobileDrawer({
             }}
             className="flex w-full items-center gap-3 px-4 py-2.5 font-mono text-[13px] text-muted-foreground"
           >
-            Settings
+            <span className="flex-1 text-left">Settings</span>
           </button>
         </div>
       </div>

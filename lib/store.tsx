@@ -13,12 +13,12 @@ import type { AccessRecord, TardsCategory, TardsNode } from './types'
 import { DEFAULT_CATEGORIES, DEFAULT_NODES } from './nodes-data'
 
 const KEYS = {
-  nodes: 'tards.nodes.v1',
-  categories: 'tards.categories.v1',
-  favorites: 'tards.favorites.v1',
-  recent: 'tards.recent.v1',
-  settings: 'tards.settings.v1',
-  booted: 'tards.booted.v1',
+  nodes: 'tards.nodes.v2',
+  categories: 'tards.categories.v2',
+  favorites: 'tards.favorites.v2',
+  recent: 'tards.recent.v2',
+  settings: 'tards.settings.v2',
+  booted: 'tards.booted.v2',
 }
 
 type NewNode = Omit<TardsNode, 'id' | 'createdAt' | 'order'>
